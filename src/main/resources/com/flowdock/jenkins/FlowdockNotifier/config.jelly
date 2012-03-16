@@ -1,0 +1,33 @@
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+
+  <f:entry title="Flow API token" field="flowToken">
+    <f:textbox />
+  </f:entry>
+
+  <f:entry title="Notification tags" field="notificationTags">
+    <f:textbox />
+  </f:entry>
+
+  <f:entry title="Chat notification with failed builds" field="chatNotification">
+    <f:checkbox />
+  </f:entry>
+
+  <f:section title="Notify with following build statuses">
+    <f:entry title="Success" field="notifySuccess">
+      <f:checkbox default="true" />
+    </f:entry>
+    <f:entry title="Failure" field="notifyFailure">
+      <f:checkbox default="true" />
+    </f:entry>
+    <f:entry title="Unstable" field="notifyUnstable">
+      <f:checkbox />
+    </f:entry>
+    <f:entry title="Aborted" field="notifyAborted">
+      <f:checkbox />
+    </f:entry>
+    <f:entry title="Not built" field="notifyNotBuilt">
+      <f:checkbox />
+    </f:entry>
+  </f:section>
+
+</j:jelly>
