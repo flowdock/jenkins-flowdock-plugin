@@ -22,10 +22,12 @@ public class TeamInboxMessage extends FlowdockMessage {
     protected String subject;
     protected String link;
     protected String fromAddress;
+    protected String fromName;
 
     public TeamInboxMessage() {
-        this.source = "Jenkins CI";
+        this.source = "Jenkins";
         this.fromAddress = FLOWDOCK_BUILD_OK_EMAIL;
+        this.fromName = "CI";
     }
 
     public void setSource(String source) {
@@ -48,11 +50,16 @@ public class TeamInboxMessage extends FlowdockMessage {
         this.fromAddress = fromAddress;
     }
 
+    public void setFromName(String fromName) {
+        this.fromName = fromName;
+    }
+
     public String asPostData() throws UnsupportedEncodingException {
         StringBuffer postData = new StringBuffer();
         postData.append("subject=").append(urlEncode(subject));
         postData.append("&content=").append(urlEncode(content));
         postData.append("&from_address=").append(urlEncode(fromAddress));
+        postData.append("&from_name=").append(urlEncode(fromName));
         postData.append("&source=").append(urlEncode(source));
         postData.append("&project=").append(urlEncode(project));
         postData.append("&link=").append(urlEncode(link));
@@ -76,9 +83,8 @@ public class TeamInboxMessage extends FlowdockMessage {
         content.append("Project: ").append(build.getProject().getName()).append("<br />");
         content.append("Build: ").append(build.getDisplayName()).append("<br />");
         content.append("Result: ").append(build.getResult().toString()).append("<br />");
-        if(buildLink != null) {
+        if(buildLink != null)
             content.append("URL: <a href=\"").append(buildLink).append("\">").append(buildLink).append("</a>").append("<br />");
-        }
         msg.setContent(content.toString());
 
         return msg;

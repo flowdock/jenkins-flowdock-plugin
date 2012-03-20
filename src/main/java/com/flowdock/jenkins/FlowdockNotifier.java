@@ -38,12 +38,13 @@ public class FlowdockNotifier extends Notifier {
         this.notificationTags = notificationTags;
         this.chatNotification = chatNotification;
 
+        // set notification map: if there's not configuration yet, use the default value
         this.notifyMap = new HashMap<Result, Boolean>() {{
-            put(Result.SUCCESS, notifySuccess);
-            put(Result.FAILURE, notifyFailure);
-            put(Result.UNSTABLE, notifyUnstable);
-            put(Result.ABORTED, notifyAborted);
-            put(Result.NOT_BUILT, notifyNotBuilt);
+            put(Result.SUCCESS, (notifySuccess == null) ? true : notifySuccess);
+            put(Result.FAILURE, (notifyFailure == null) ? true : notifyFailure);
+            put(Result.UNSTABLE, (notifyUnstable == null) ? false : notifyUnstable);
+            put(Result.ABORTED, (notifyAborted == null) ? false : notifyAborted);
+            put(Result.NOT_BUILT, (notifyNotBuilt == null) ? false : notifyNotBuilt);
         }};
     }
 
