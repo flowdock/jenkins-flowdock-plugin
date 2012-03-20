@@ -10,11 +10,26 @@
   <artifactId>jenkins-flowdock-plugin</artifactId>
   <version>1.0</version>
   <packaging>hpi</packaging>
+  <url>http://wiki.jenkins-ci.org/display/JENKINS/jenkins-flowdock-plugin</url>
+
+  <developers>
+    <developer>
+      <id>anttipitkanen</id>
+      <name>Antti Pitkanen</name>
+      <email>antti@flowdock.com</email>
+    </developer>
+  </developers>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
   </properties>
+
+  <scm>
+    <connection>scm:git:ssh://github.com/flowdock/jenkins-flowdock-plugin.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com/flowdock/jenkins-flowdock-plugin.git</developerConnection>
+    <url>https://github.com/flowdock/jenkins-flowdock-pluginE</url>
+  </scm>
 
   <!-- get every artifact through maven.glassfish.org, which proxies all the artifacts that we need -->
   <repositories>
