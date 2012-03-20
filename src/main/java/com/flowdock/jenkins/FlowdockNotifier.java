@@ -27,53 +27,32 @@ public class FlowdockNotifier extends Notifier {
     private final String notificationTags;
     private final Boolean chatNotification;
 
-    private final Boolean notifySuccess;
-    private final Boolean notifyFailure;
-    private final Boolean notifyUnstable;
-    private final Boolean notifyAborted;
-    private final Boolean notifyNotBuilt;
+    private final Map<Result, Boolean> notifyMap;
 
     // Fields in config.jelly must match the parameter names in the "DataBoundConstructor"
     @DataBoundConstructor
     public FlowdockNotifier(String flowToken, String notificationTags, Boolean chatNotification,
-      Boolean notifySuccess, Boolean notifyFailure, Boolean notifyUnstable, Boolean notifyAborted, Boolean notifyNotBuilt) {
+        final Boolean notifySuccess, final Boolean notifyFailure, final Boolean notifyUnstable,
+        final Boolean notifyAborted, final Boolean notifyNotBuilt) {
         this.flowToken = flowToken;
         this.notificationTags = notificationTags;
         this.chatNotification = chatNotification;
 
-        this.notifySuccess = notifySuccess;
-        this.notifyFailure = notifyFailure;
-        this.notifyUnstable = notifyUnstable;
-        this.notifyAborted = notifyAborted;
-        this.notifyNotBuilt = notifyNotBuilt;
+        this.notifyMap = new HashMap<Result, Boolean>() {{
+            put(Result.SUCCESS, notifySuccess);
+            put(Result.FAILURE, notifyFailure);
+            put(Result.UNSTABLE, notifyUnstable);
+            put(Result.ABORTED, notifyAborted);
+            put(Result.NOT_BUILT, notifyNotBuilt);
+        }};
     }
 
     public String getFlowToken() {
-      return flowToken;
+        return flowToken;
     }
 
     public String getNotificationTags() {
-      return notificationTags;
-    }
-
-    public Boolean getChatNotification() {
-      return chatNotification;
-    }
-
-    public Boolean getNotifySuccess() {
-      return notifySuccess;
-    }
-    public Boolean getNotifyFailure() {
-      return notifyFailure;
-    }
-    public Boolean getNotifyUnstable() {
-      return notifyUnstable;
-    }
-    public Boolean getNotifyAborted() {
-      return notifyAborted;
-    }
-    public Boolean getNotifyNotBuilt() {
-      return notifyNotBuilt;
+        return notificationTags;
     }
 
     public BuildStepMonitor getRequiredMonitorService() {
@@ -96,13 +75,6 @@ public class FlowdockNotifier extends Notifier {
     }
 
     public boolean shouldNotify(Result buildResult) {
-        Map<Result, Boolean> notifyMap = new HashMap<Result, Boolean>() {{
-            put(Result.SUCCESS, notifySuccess);
-            put(Result.FAILURE, notifyFailure);
-            put(Result.UNSTABLE, notifyUnstable);
-            put(Result.ABORTED, notifyAborted);
-            put(Result.NOT_BUILT, notifyNotBuilt);
-        }};
         return notifyMap.get(buildResult);
     }
 
@@ -129,7 +101,7 @@ public class FlowdockNotifier extends Notifier {
     @Extension
     public static final class DescriptorImpl extends BuildStepDescriptor<Publisher> {
 
-        private String apiUrl = "https://api.flowdock.com/";
+        private String apiUrl = "https://api.flowdock.com";
 
         public boolean isApplicable(Class<? extends AbstractProject> aClass) {
             return true;

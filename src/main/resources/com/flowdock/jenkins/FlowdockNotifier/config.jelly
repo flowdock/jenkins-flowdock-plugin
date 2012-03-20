@@ -8,7 +8,7 @@
     <f:textbox />
   </f:entry>
 
-  <f:entry title="Chat notification with failed builds" field="chatNotification">
+  <f:entry title="Chat notification when build fails" field="chatNotification">
     <f:checkbox />
   </f:entry>
 
