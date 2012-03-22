@@ -8,6 +8,10 @@
     <f:textbox />
   </f:entry>
 
+  <f:validateButton
+     title="Test connection with Chat notification" progress="Sending..."
+     method="testConnection" with="flowToken,notificationTags" />
+
   <f:entry title="Chat notification when build fails" field="chatNotification">
     <f:checkbox />
   </f:entry>

@@ -18,6 +18,9 @@ import org.kohsuke.stapler.QueryParameter;
 
 import javax.servlet.ServletException;
 import java.io.IOException;
+import java.io.PrintStream;
+import java.io.StringWriter;
+import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -110,6 +113,23 @@ public class FlowdockNotifier extends Notifier {
 
         public String getDisplayName() {
             return "Flowdock notification";
+        }
+
+        public FormValidation doTestConnection(@QueryParameter("flowToken") final String flowToken,
+            @QueryParameter("notificationTags") final String notificationTags) {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            PrintStream ps = new PrintStream(baos);
+
+            FlowdockAPI api = new FlowdockAPI(apiUrl(), flowToken, ps);
+            ChatMessage testMsg = new ChatMessage();
+            testMsg.setTags(notificationTags);
+            testMsg.setContent("Your plugin is ready!");
+
+            if(api.pushChatMessage(testMsg)) {
+                return FormValidation.ok("Success! Flowdock plugin can send notifications to your flow.");
+            } else {
+                return FormValidation.error(baos.toString());
+            }
         }
 
         @Override
