@@ -1,51 +1,49 @@
 package com.flowdock.jenkins;
 
+import com.flowdock.jenkins.exception.FlowdockException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.io.InputStreamReader;
 import java.io.DataOutputStream;
 import java.io.BufferedReader;
 import java.io.InputStream;
-import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
+import java.io.IOException;
+import java.net.ProtocolException;
+import java.net.MalformedURLException;
 
 public class FlowdockAPI {
     private String apiUrl;
     private String flowToken;
-    private PrintStream logger; // for logging to Jenkins output stream
 
-    public FlowdockAPI(String apiUrl, String flowToken, PrintStream logger) {
+    public FlowdockAPI(String apiUrl, String flowToken) {
         this.apiUrl = apiUrl;
         this.flowToken = flowToken;
-        this.logger = logger;
     }
 
-    public boolean pushTeamInboxMessage(TeamInboxMessage msg) {
+    public void pushTeamInboxMessage(TeamInboxMessage msg) throws FlowdockException {
         try {
-            return doPost("/messages/team_inbox/", msg.asPostData());
+            doPost("/messages/team_inbox/", msg.asPostData());
         } catch(UnsupportedEncodingException ex) {
-            logger.println("Flowdock: failed to send notification");
-            logger.println(ex);
-            return false;
+            throw new FlowdockException("Cannot encode request data: " + ex.getMessage());
         }
     }
 
-    public boolean pushChatMessage(ChatMessage msg) {
+    public void pushChatMessage(ChatMessage msg) throws FlowdockException {
         try {
-            return doPost("/messages/chat/", msg.asPostData());
+            doPost("/messages/chat/", msg.asPostData());
         } catch(UnsupportedEncodingException ex) {
-            logger.println("Flowdock: failed to send notification");
-            logger.println(ex);
-            return false;
+            throw new FlowdockException("Cannot encode request data: " + ex.getMessage());
         }
     }
 
-    private boolean doPost(String path, String data) {
+    private void doPost(String path, String data) throws FlowdockException {
         URL url;
         HttpURLConnection connection = null;
+        String flowdockUrl = apiUrl + path + flowToken;
         try {
             // create connection
-            url = new URL(apiUrl + path + flowToken);
+            url = new URL(flowdockUrl);
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("POST");
             connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
@@ -60,17 +58,15 @@ public class FlowdockAPI {
             wr.flush();
             wr.close();
 
-            if(connection.getResponseCode() == 200) {
-                return true;
-            } else {
-                logger.println("Flowdock: failed to send notification");
-                logger.println("Flowdock: response status: " + connection.getResponseCode());
-                return false;
+            if(connection.getResponseCode() != 200) {
+                throw new FlowdockException("Flowdock returned an error response with status " + connection.getResponseCode());
             }
-        } catch(Exception ex) {
-            logger.println("Flowdock: failed to send notification");
-            ex.printStackTrace(logger);
-            return false;
+        } catch(MalformedURLException ex) {
+            throw new FlowdockException("Flowdock API URL is invalid: " + flowdockUrl);
+        } catch(ProtocolException ex) {
+            throw new FlowdockException("ProtocolException in connecting to Flowdock: " + ex.getMessage());
+        } catch(IOException ex) {
+            throw new FlowdockException("IOException in connecting to Flowdock: " + ex.getMessage());
         }
     }
 }

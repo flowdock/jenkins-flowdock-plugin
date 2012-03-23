@@ -3,8 +3,6 @@ package com.flowdock.jenkins;
 import hudson.model.AbstractBuild;
 import hudson.model.Hudson;
 import hudson.model.Result;
-import hudson.model.AbstractProject;
-import hudson.tasks.test.AbstractTestResultAction;
 import java.io.UnsupportedEncodingException;
 
 public class TeamInboxMessage extends FlowdockMessage {

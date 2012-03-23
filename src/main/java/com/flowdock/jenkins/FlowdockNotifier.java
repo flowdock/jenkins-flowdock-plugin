@@ -1,7 +1,8 @@
 package com.flowdock.jenkins;
 
-import hudson.Launcher;
+import com.flowdock.jenkins.exception.FlowdockException;
 import hudson.Extension;
+import hudson.Launcher;
 import hudson.util.FormValidation;
 import hudson.model.AbstractBuild;
 import hudson.model.BuildListener;
@@ -16,11 +17,7 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.QueryParameter;
 
-import javax.servlet.ServletException;
-import java.io.IOException;
 import java.io.PrintStream;
-import java.io.StringWriter;
-import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -83,18 +80,24 @@ public class FlowdockNotifier extends Notifier {
     }
 
     protected void notifyFlowdock(AbstractBuild build, BuildListener listener) {
-      FlowdockAPI api = new FlowdockAPI(getDescriptor().apiUrl(), flowToken, listener.getLogger());
-      TeamInboxMessage msg = TeamInboxMessage.fromBuild(build);
-      msg.setTags(notificationTags);
+        PrintStream logger = listener.getLogger();
+        try {
+            FlowdockAPI api = new FlowdockAPI(getDescriptor().apiUrl(), flowToken);
+            TeamInboxMessage msg = TeamInboxMessage.fromBuild(build);
+            msg.setTags(notificationTags);
+            api.pushTeamInboxMessage(msg);
+            listener.getLogger().println("Flowdock: Team Inbox notification sent successfully");
 
-      if(build.getResult() != Result.SUCCESS && chatNotification) {
-        ChatMessage chatMsg = ChatMessage.fromBuild(build);
-        chatMsg.setTags(notificationTags);
-        if(api.pushChatMessage(chatMsg))
-            listener.getLogger().println("Flowdock: Chat notification sent successfully");
-      }
-      if(api.pushTeamInboxMessage(msg))
-        listener.getLogger().println("Flowdock: Team Inbox notification sent successfully");
+            if(build.getResult() != Result.SUCCESS && chatNotification) {
+                ChatMessage chatMsg = ChatMessage.fromBuild(build);
+                chatMsg.setTags(notificationTags);
+                api.pushChatMessage(chatMsg);
+                logger.println("Flowdock: Chat notification sent successfully");
+            }
+        } catch(FlowdockException ex) {
+            logger.println("Flowdock: failed to send notification");
+            logger.println("Flowdock: " + ex.getMessage());
+        }
     }
 
     @Override
@@ -117,18 +120,15 @@ public class FlowdockNotifier extends Notifier {
 
         public FormValidation doTestConnection(@QueryParameter("flowToken") final String flowToken,
             @QueryParameter("notificationTags") final String notificationTags) {
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            PrintStream ps = new PrintStream(baos);
-
-            FlowdockAPI api = new FlowdockAPI(apiUrl(), flowToken, ps);
-            ChatMessage testMsg = new ChatMessage();
-            testMsg.setTags(notificationTags);
-            testMsg.setContent("Your plugin is ready!");
-
-            if(api.pushChatMessage(testMsg)) {
+            try {
+                FlowdockAPI api = new FlowdockAPI(apiUrl(), flowToken);
+                ChatMessage testMsg = new ChatMessage();
+                testMsg.setTags(notificationTags);
+                testMsg.setContent("Your plugin is ready!");
+                api.pushChatMessage(testMsg);
                 return FormValidation.ok("Success! Flowdock plugin can send notifications to your flow.");
-            } else {
-                return FormValidation.error(baos.toString());
+            } catch(FlowdockException ex) {
+                return FormValidation.error(ex.getMessage());
             }
         }
 

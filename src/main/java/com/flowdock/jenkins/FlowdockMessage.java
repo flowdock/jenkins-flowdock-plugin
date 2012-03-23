@@ -1,7 +1,5 @@
 package com.flowdock.jenkins;
-import hudson.model.AbstractBuild;
-import hudson.model.Hudson;
-import hudson.model.AbstractProject;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
