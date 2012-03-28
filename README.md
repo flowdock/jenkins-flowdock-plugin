@@ -6,17 +6,17 @@ to go. See [Tokens](https://www.flowdock.com/account/tokens) page for list of yo
 
 ## Install
 
-### From Jenkins Plugin repository (coming soon!)
+### From Jenkins Plugin repository
 
- * Go to Manage Jenkins/Hudson -> Manage Plugins -> Available
- * Find "Flowdock plugin" and install it
+ * Download [the latest plugin](http://updates.jenkins-ci.org/latest/jenkins-flowdock-plugin.hpi)
+ * Install it by uploading the package in admin: `Manage Jenkins/Hudson -> Manage Plugins -> Advanced -> Upload Plugin`
  * Restart Jenkins/Hudson
 
 ### From source
 
  * Clone the Github repo
  * Run `mvn install` to build a .hpi-plugin package
- * Install to Jenkins/Hudson by uploading the package in admin: `Manage Jenkins/Hudson -> Manage Plugins -> Advanced -> Upload Plugin`
+ * Install it by uploading the package in admin: `Manage Jenkins/Hudson -> Manage Plugins -> Advanced -> Upload Plugin`
  * Restart Jenkins/Hudson
 
 ## Configure
