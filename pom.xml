@@ -7,10 +7,11 @@
   </parent>
 
   <groupId>com.flowdock.jenkins</groupId>
+  <name>Flowdock plugin</name>
   <artifactId>jenkins-flowdock-plugin</artifactId>
-  <version>1.0-SNAPSHOT</version>
+  <version>1.0.1-SNAPSHOT</version>
   <packaging>hpi</packaging>
-  <url>http://wiki.jenkins-ci.org/display/JENKINS/jenkins-flowdock-plugin</url>
+  <url>https://github.com/flowdock/jenkins-flowdock-plugin</url>
 
   <developers>
     <developer>
