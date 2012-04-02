@@ -6,6 +6,12 @@ to go. See [Tokens](https://www.flowdock.com/account/tokens) page for list of yo
 
 ## Install
 
+### With Jenkins Plugin manager
+
+ * Go to Manage Jenkins -> Manage Plugins -> Available
+ * Find "Flowdock plugin" and install it
+ * Restart Jenkins
+
 ### From Jenkins Plugin repository
 
  * Download [the latest plugin](http://updates.jenkins-ci.org/latest/jenkins-flowdock-plugin.hpi)
