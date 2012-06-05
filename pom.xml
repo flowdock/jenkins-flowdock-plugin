@@ -3,14 +3,14 @@
   <parent>
     <groupId>org.jenkins-ci.plugins</groupId>
     <artifactId>plugin</artifactId>
-    <version>1.454</version><!-- which version of Jenkins is this plugin built against? -->
+    <version>1.464</version><!-- which version of Jenkins is this plugin built against? -->
   </parent>
 
   <groupId>com.flowdock.jenkins</groupId>
   <name>Flowdock plugin</name>
   <description>Posts build notifications to your flow</description>
   <artifactId>jenkins-flowdock-plugin</artifactId>
-  <version>1.0.3-SNAPSHOT</version>
+  <version>1.0.3</version>
   <packaging>hpi</packaging>
   <url>https://github.com/flowdock/jenkins-flowdock-plugin</url>
 
