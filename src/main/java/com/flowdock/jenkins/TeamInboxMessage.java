@@ -82,17 +82,18 @@ public class TeamInboxMessage extends FlowdockMessage {
             msg.setFromAddress(FLOWDOCK_BUILD_FAIL_EMAIL);
 
         StringBuffer content = new StringBuffer();
-        content.append("Project: ").append(build.getProject().getName()).append("<br />");
+        content.append("<h2>").append(build.getProject().getName()).append("</h2>");
         content.append("Build: ").append(build.getDisplayName()).append("<br />");
         content.append("Result: ").append(build.getResult().toString()).append("<br />");
         if(buildLink != null)
             content.append("URL: <a href=\"").append(buildLink).append("\">").append(buildLink).append("</a>").append("<br />");
 
-        List<String> commits = parseCommits(build);
+        List<Entry> commits = parseCommits(build);
         if(commits != null) {
-            content.append("<br />Changes:<br/>");
-            for(String commitId : commits) {
-                content.append(commitId);
+            content.append("<h3>Changes</h3>");
+            for(Entry commit : commits) {
+                content.append("<strong>").append(commit.getAuthor()).append("</strong>:");
+                content.append(" <small><code>").append(commit.getCommitId()).append("</code></small> ").append(commit.getMsg()).append("");
                 content.append("<br />");
             }
         }
@@ -102,15 +103,16 @@ public class TeamInboxMessage extends FlowdockMessage {
         return msg;
     }
 
-    public static List<String> parseCommits(AbstractBuild build) {
+    public static List<Entry> parseCommits(AbstractBuild build) {
         final ChangeLogSet<? extends Entry> cs = build.getChangeSet();
         if(cs == null || cs.isEmptySet())
             return null;
 
-        List<String> revisions = new ArrayList();
+        List<Entry> commits = new ArrayList();
         for (final Entry entry : cs) {
-            revisions.add(entry.getCommitId());
+            // reverse order in order to have recent commits first
+            commits.add(0, entry);
         }
-        return revisions;
+        return commits;
     }
 }
