@@ -1,8 +1,12 @@
 package com.flowdock.jenkins;
 
+import java.util.List;
+import java.util.ArrayList;
 import hudson.model.AbstractBuild;
 import hudson.model.Hudson;
 import hudson.model.Result;
+import hudson.scm.ChangeLogSet;
+import hudson.scm.ChangeLogSet.Entry;
 import java.io.UnsupportedEncodingException;
 
 public class TeamInboxMessage extends FlowdockMessage {
@@ -83,8 +87,30 @@ public class TeamInboxMessage extends FlowdockMessage {
         content.append("Result: ").append(build.getResult().toString()).append("<br />");
         if(buildLink != null)
             content.append("URL: <a href=\"").append(buildLink).append("\">").append(buildLink).append("</a>").append("<br />");
+
+        List<String> commits = parseCommits(build);
+        if(commits != null) {
+            content.append("<br />Changes:<br/>");
+            for(String commitId : commits) {
+                content.append(commitId);
+                content.append("<br />");
+            }
+        }
+
         msg.setContent(content.toString());
 
         return msg;
+    }
+
+    public static List<String> parseCommits(AbstractBuild build) {
+        final ChangeLogSet<? extends Entry> cs = build.getChangeSet();
+        if(cs == null || cs.isEmptySet())
+            return null;
+
+        List<String> revisions = new ArrayList();
+        for (final Entry entry : cs) {
+            revisions.add(entry.getCommitId());
+        }
+        return revisions;
     }
 }
