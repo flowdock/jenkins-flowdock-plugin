@@ -37,18 +37,19 @@ to go. See [Tokens](https://www.flowdock.com/account/tokens) page for list of yo
 
 ```
 Flowdock: failed to send notification
-Flowdock: response status: 401
+Flowdock: response status: 401 Unauthorized
 ```
 
 Most likely the API token is not valid or you do not have the permission to access the flow.
 
 ```
 Flowdock: failed to send notification
-Flowdock: response status: 400
+Flowdock: response status: 400 Bad Request, _RESPONSE_
 ```
 
 Validation of the notification message failed. This can occur when customizing the build notification content as it needs to conform to
- Flowdock Push API format described in [the API documentation](https://www.flowdock.com/api/push).
+ Flowdock Push API format described in [the API documentation](https://www.flowdock.com/api/push). The _RESPONSE_ text should help in debugging
+ why the message was rejected.
 
 ## Write your own custom notifier
 
