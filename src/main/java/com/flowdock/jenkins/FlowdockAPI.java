@@ -68,7 +68,7 @@ public class FlowdockAPI {
                     }
                     in.close();
                 } catch(Exception ex) {
-                    responseContent.append(ex.getMessage());
+                    // nothing we can do about this
                 } finally {
                     throw new FlowdockException("Flowdock returned an error response with status " + connection.getResponseCode() + " " + connection.getResponseMessage() + ", " + responseContent.toString());
                 }
