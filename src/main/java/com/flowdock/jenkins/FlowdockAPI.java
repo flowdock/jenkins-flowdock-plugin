@@ -59,7 +59,19 @@ public class FlowdockAPI {
             wr.close();
 
             if(connection.getResponseCode() != 200) {
-                throw new FlowdockException("Flowdock returned an error response with status " + connection.getResponseCode() + " " + connection.getResponseMessage());
+                StringBuffer responseContent = new StringBuffer();
+                try {
+                    BufferedReader in = new BufferedReader(new InputStreamReader(connection.getErrorStream()));
+                    String responseLine;
+                    while ((responseLine = in.readLine()) != null) {
+                        responseContent.append(responseLine);
+                    }
+                    in.close();
+                } catch(Exception ex) {
+                    responseContent.append(ex.getMessage());
+                } finally {
+                    throw new FlowdockException("Flowdock returned an error response with status " + connection.getResponseCode() + " " + connection.getResponseMessage() + ", " + responseContent.toString());
+                }
             }
         } catch(MalformedURLException ex) {
             throw new FlowdockException("Flowdock API URL is invalid: " + flowdockUrl);
