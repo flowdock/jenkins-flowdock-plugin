@@ -26,8 +26,9 @@ public class ChatMessage extends FlowdockMessage {
     public static ChatMessage fromBuild(AbstractBuild build) {
         ChatMessage msg = new ChatMessage();
         StringBuffer content = new StringBuffer();
+        String displayName = build.getDisplayName().replaceAll("#", "No. ");
         content.append("Build: ").append(build.getProject().getName()).
-            append(" ").append(build.getDisplayName()).
+            append(" ").append(displayName).
             append(" is ").append(build.getResult().toString());
 
         String rootUrl = Hudson.getInstance().getRootUrl();
