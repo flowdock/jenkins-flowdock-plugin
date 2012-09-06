@@ -25,27 +25,37 @@ public class FlowdockNotifier extends Notifier {
 
     private final String flowToken;
     private final String notificationTags;
-    private final Boolean chatNotification;
+    private final boolean chatNotification;
 
     private final Map<Result, Boolean> notifyMap;
+    private final boolean notifySuccess;
+    private final boolean notifyFailure;
+    private final boolean notifyUnstable;
+    private final boolean notifyAborted;
+    private final boolean notifyNotBuilt;
 
     // Fields in config.jelly must match the parameter names in the "DataBoundConstructor"
     @DataBoundConstructor
-    public FlowdockNotifier(String flowToken, String notificationTags, Boolean chatNotification,
-        final Boolean notifySuccess, final Boolean notifyFailure, final Boolean notifyUnstable,
-        final Boolean notifyAborted, final Boolean notifyNotBuilt) {
+    public FlowdockNotifier(String flowToken, String notificationTags, String chatNotification,
+        String notifySuccess, String notifyFailure, String notifyUnstable,
+        String notifyAborted, String notifyNotBuilt) {
         this.flowToken = flowToken;
         this.notificationTags = notificationTags;
-        this.chatNotification = chatNotification;
+        this.chatNotification = chatNotification != null && chatNotification.equals("true");
 
-        // set notification map: if there's not configuration yet, use the default value
-        this.notifyMap = new HashMap<Result, Boolean>() {{
-            put(Result.SUCCESS, (notifySuccess == null) ? true : notifySuccess);
-            put(Result.FAILURE, (notifyFailure == null) ? true : notifyFailure);
-            put(Result.UNSTABLE, (notifyUnstable == null) ? false : notifyUnstable);
-            put(Result.ABORTED, (notifyAborted == null) ? false : notifyAborted);
-            put(Result.NOT_BUILT, (notifyNotBuilt == null) ? false : notifyNotBuilt);
-        }};
+        this.notifySuccess = notifySuccess != null && notifySuccess.equals("true");
+        this.notifyFailure = notifyFailure != null && notifyFailure.equals("true");
+        this.notifyUnstable = notifyUnstable != null && notifyUnstable.equals("true");
+        this.notifyAborted = notifyAborted != null && notifyAborted.equals("true");
+        this.notifyNotBuilt = notifyNotBuilt != null && notifyNotBuilt.equals("true");
+
+        // set notification map
+        this.notifyMap = new HashMap<Result, Boolean>();
+        this.notifyMap.put(Result.SUCCESS, this.notifySuccess);
+        this.notifyMap.put(Result.FAILURE, this.notifyFailure);
+        this.notifyMap.put(Result.UNSTABLE, this.notifyUnstable);
+        this.notifyMap.put(Result.ABORTED, this.notifyAborted);
+        this.notifyMap.put(Result.NOT_BUILT, this.notifyNotBuilt);
     }
 
     public String getFlowToken() {
@@ -54,6 +64,26 @@ public class FlowdockNotifier extends Notifier {
 
     public String getNotificationTags() {
         return notificationTags;
+    }
+
+    public boolean getChatNotification() {
+        return chatNotification;
+    }
+
+    public boolean getNotifySuccess() {
+        return notifySuccess;
+    }
+    public boolean getNotifyFailure() {
+        return notifyFailure;
+    }
+    public boolean getNotifyUnstable() {
+        return notifyUnstable;
+    }
+    public boolean getNotifyAborted() {
+        return notifyAborted;
+    }
+    public boolean getNotifyNotBuilt() {
+        return notifyNotBuilt;
     }
 
     public BuildStepMonitor getRequiredMonitorService() {
@@ -136,7 +166,7 @@ public class FlowdockNotifier extends Notifier {
         public boolean configure(StaplerRequest req, JSONObject formData) throws FormException {
             apiUrl = formData.getString("apiUrl");
             save();
-            return super.configure(req,formData);
+            return super.configure(req, formData);
         }
 
         public String apiUrl() {
