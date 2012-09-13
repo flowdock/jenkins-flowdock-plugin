@@ -4,12 +4,18 @@ import hudson.model.AbstractBuild;
 import hudson.model.Result;
 
 public enum BuildResult {
-    SUCCESS,
-    FAILURE,
-    UNSTABLE,
-    ABORTED,
-    NOT_BUILT,
-    FIXED;
+    SUCCESS("was successful"),
+    FAILURE("failed"),
+    UNSTABLE("was unstable"),
+    ABORTED("was aborted"),
+    NOT_BUILT("was not built"),
+    FIXED("was fixed");
+
+    private String humanResult;
+
+    private BuildResult(String displayName) {
+        this.humanResult = displayName;
+    }
 
     public static BuildResult fromBuild(AbstractBuild build) {
         if (build.getResult().equals(Result.SUCCESS)) {
@@ -27,5 +33,9 @@ public enum BuildResult {
         } else {
             return FAILURE;
         }
+    }
+
+    public String getHumanResult() {
+        return humanResult;
     }
 }

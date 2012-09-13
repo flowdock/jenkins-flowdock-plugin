@@ -72,8 +72,8 @@ public class TeamInboxMessage extends FlowdockMessage {
     public static TeamInboxMessage fromBuild(AbstractBuild build, BuildResult buildResult) {
         TeamInboxMessage msg = new TeamInboxMessage();
         msg.setProject(build.getProject().getName().replaceAll("[^a-zA-Z0-9\\-_ ]", ""));
-        String displayName = build.getDisplayName().replaceAll("#", "No. ");
-        msg.setSubject("Build: " + build.getProject().getName() + " " + displayName + " is " + buildResult.toString());
+        String buildNo = build.getDisplayName().replaceAll("#", "");
+        msg.setSubject(build.getProject().getName() + " build " + buildNo + " " + buildResult.getHumanResult());
 
         String rootUrl = Hudson.getInstance().getRootUrl();
         String buildLink = (rootUrl == null) ? null : rootUrl + build.getUrl();
