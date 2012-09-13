@@ -27,6 +27,9 @@
         <f:entry title="Failure" field="notifyFailure">
           <f:checkbox default="true" value="true" />
         </f:entry>
+        <f:entry title="Fixed" field="notifyFixed">
+          <f:checkbox default="true" value="true" />
+        </f:entry>
         <f:entry title="Unstable" field="notifyUnstable">
           <f:checkbox value="true" />
         </f:entry>

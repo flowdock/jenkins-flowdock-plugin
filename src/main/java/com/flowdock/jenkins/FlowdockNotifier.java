@@ -23,13 +23,15 @@ import java.util.Map;
 
 public class FlowdockNotifier extends Notifier {
 
+
     private final String flowToken;
     private final String notificationTags;
     private final boolean chatNotification;
 
-    private final Map<Result, Boolean> notifyMap;
+    private final Map<BuildResult, Boolean> notifyMap;
     private final boolean notifySuccess;
     private final boolean notifyFailure;
+    private final boolean notifyFixed;
     private final boolean notifyUnstable;
     private final boolean notifyAborted;
     private final boolean notifyNotBuilt;
@@ -37,7 +39,7 @@ public class FlowdockNotifier extends Notifier {
     // Fields in config.jelly must match the parameter names in the "DataBoundConstructor"
     @DataBoundConstructor
     public FlowdockNotifier(String flowToken, String notificationTags, String chatNotification,
-        String notifySuccess, String notifyFailure, String notifyUnstable,
+        String notifySuccess, String notifyFailure, String notifyFixed, String notifyUnstable,
         String notifyAborted, String notifyNotBuilt) {
         this.flowToken = flowToken;
         this.notificationTags = notificationTags;
@@ -45,17 +47,19 @@ public class FlowdockNotifier extends Notifier {
 
         this.notifySuccess = notifySuccess != null && notifySuccess.equals("true");
         this.notifyFailure = notifyFailure != null && notifyFailure.equals("true");
+        this.notifyFixed = notifyFixed != null && notifyFixed.equals("true");
         this.notifyUnstable = notifyUnstable != null && notifyUnstable.equals("true");
         this.notifyAborted = notifyAborted != null && notifyAborted.equals("true");
         this.notifyNotBuilt = notifyNotBuilt != null && notifyNotBuilt.equals("true");
 
         // set notification map
-        this.notifyMap = new HashMap<Result, Boolean>();
-        this.notifyMap.put(Result.SUCCESS, this.notifySuccess);
-        this.notifyMap.put(Result.FAILURE, this.notifyFailure);
-        this.notifyMap.put(Result.UNSTABLE, this.notifyUnstable);
-        this.notifyMap.put(Result.ABORTED, this.notifyAborted);
-        this.notifyMap.put(Result.NOT_BUILT, this.notifyNotBuilt);
+        this.notifyMap = new HashMap<BuildResult, Boolean>();
+        this.notifyMap.put(BuildResult.SUCCESS, this.notifySuccess);
+        this.notifyMap.put(BuildResult.FAILURE, this.notifyFailure);
+        this.notifyMap.put(BuildResult.FIXED, this.notifyFixed);
+        this.notifyMap.put(BuildResult.UNSTABLE, this.notifyUnstable);
+        this.notifyMap.put(BuildResult.ABORTED, this.notifyAborted);
+        this.notifyMap.put(BuildResult.NOT_BUILT, this.notifyNotBuilt);
     }
 
     public String getFlowToken() {
@@ -75,6 +79,9 @@ public class FlowdockNotifier extends Notifier {
     }
     public boolean getNotifyFailure() {
         return notifyFailure;
+    }
+    public boolean getNotifyFixed() {
+        return notifyFixed;
     }
     public boolean getNotifyUnstable() {
         return notifyUnstable;
@@ -97,23 +104,24 @@ public class FlowdockNotifier extends Notifier {
 
     @Override
     public boolean perform(AbstractBuild build, Launcher launcher, BuildListener listener) {
-        if(shouldNotify(build.getResult())) {
-            notifyFlowdock(build, listener);
+        BuildResult buildResult = BuildResult.fromBuild(build);
+        if(shouldNotify(buildResult)) {
+            notifyFlowdock(build, buildResult, listener);
         } else {
-            listener.getLogger().println("No Flowdock notification configured for build status: " + build.getResult().toString());
+            listener.getLogger().println("No Flowdock notification configured for build status: " + buildResult.toString());
         }
         return true;
     }
 
-    public boolean shouldNotify(Result buildResult) {
+    public boolean shouldNotify(BuildResult buildResult) {
         return notifyMap.get(buildResult);
     }
 
-    protected void notifyFlowdock(AbstractBuild build, BuildListener listener) {
+    protected void notifyFlowdock(AbstractBuild build, BuildResult buildResult, BuildListener listener) {
         PrintStream logger = listener.getLogger();
         try {
             FlowdockAPI api = new FlowdockAPI(getDescriptor().apiUrl(), flowToken);
-            TeamInboxMessage msg = TeamInboxMessage.fromBuild(build);
+            TeamInboxMessage msg = TeamInboxMessage.fromBuild(build, buildResult);
             msg.setTags(notificationTags);
             api.pushTeamInboxMessage(msg);
             listener.getLogger().println("Flowdock: Team Inbox notification sent successfully");
