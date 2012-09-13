@@ -69,11 +69,11 @@ public class TeamInboxMessage extends FlowdockMessage {
         return postData.toString();
     }
 
-    public static TeamInboxMessage fromBuild(AbstractBuild build) {
+    public static TeamInboxMessage fromBuild(AbstractBuild build, BuildResult buildResult) {
         TeamInboxMessage msg = new TeamInboxMessage();
         msg.setProject(build.getProject().getName().replaceAll("[^a-zA-Z0-9\\-_ ]", ""));
         String displayName = build.getDisplayName().replaceAll("#", "No. ");
-        msg.setSubject("Build: " + build.getProject().getName() + " " + displayName + " is " + build.getResult().toString());
+        msg.setSubject("Build: " + build.getProject().getName() + " " + displayName + " is " + buildResult.toString());
 
         String rootUrl = Hudson.getInstance().getRootUrl();
         String buildLink = (rootUrl == null) ? null : rootUrl + build.getUrl();
@@ -85,7 +85,7 @@ public class TeamInboxMessage extends FlowdockMessage {
         StringBuffer content = new StringBuffer();
         content.append("<h2>").append(build.getProject().getName()).append("</h2>");
         content.append("Build: ").append(build.getDisplayName()).append("<br />");
-        content.append("Result: ").append(build.getResult().toString()).append("<br />");
+        content.append("Result: ").append(buildResult.toString()).append("<br />");
         if(buildLink != null)
             content.append("URL: <a href=\"").append(buildLink).append("\">").append(buildLink).append("</a>").append("<br />");
 
