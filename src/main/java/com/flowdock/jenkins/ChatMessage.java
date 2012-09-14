@@ -23,13 +23,12 @@ public class ChatMessage extends FlowdockMessage {
         return postData.toString();
     }
 
-    public static ChatMessage fromBuild(AbstractBuild build) {
+    public static ChatMessage fromBuild(AbstractBuild build, BuildResult buildResult) {
         ChatMessage msg = new ChatMessage();
         StringBuffer content = new StringBuffer();
-        String displayName = build.getDisplayName().replaceAll("#", "No. ");
-        content.append("Build: ").append(build.getProject().getName()).
-            append(" ").append(displayName).
-            append(" is ").append(build.getResult().toString());
+        String buildNo = build.getDisplayName().replaceAll("#", "");
+        content.append(build.getProject().getName()).append(" build ").append(buildNo);
+        content.append(" ").append(buildResult.getHumanResult());
 
         String rootUrl = Hudson.getInstance().getRootUrl();
         String buildLink = (rootUrl == null) ? null : rootUrl + build.getUrl();

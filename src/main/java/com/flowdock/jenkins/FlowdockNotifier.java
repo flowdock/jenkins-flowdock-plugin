@@ -127,7 +127,7 @@ public class FlowdockNotifier extends Notifier {
             listener.getLogger().println("Flowdock: Team Inbox notification sent successfully");
 
             if(build.getResult() != Result.SUCCESS && chatNotification) {
-                ChatMessage chatMsg = ChatMessage.fromBuild(build);
+                ChatMessage chatMsg = ChatMessage.fromBuild(build, buildResult);
                 chatMsg.setTags(notificationTags);
                 api.pushChatMessage(chatMsg);
                 logger.println("Flowdock: Chat notification sent successfully");
