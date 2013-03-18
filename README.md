@@ -36,6 +36,28 @@ to go. See [Tokens](https://www.flowdock.com/account/tokens) page for list of yo
 ## Troubleshooting by Console Output
 
 ```
+ERROR: Publisher com.flowdock.jenkins.FlowdockNotifier aborted due to exception
+ java.lang.NullPointerException
+ at com.flowdock.jenkins.FlowdockNotifier.shouldNotify(FlowdockNotifier.java:117)
+ at com.flowdock.jenkins.FlowdockNotifier.perform(FlowdockNotifier.java:108)
+ at hudson.tasks.BuildStepMonitor$1.perform(BuildStepMonitor.java:19)
+ at hudson.model.AbstractBuild$AbstractBuildExecution.perform(AbstractBuild.java:717)
+ at hudson.model.AbstractBuild$AbstractBuildExecution.performAllBuildSteps(AbstractBuild.java:692)
+ at hudson.model.Build$BuildExecution.cleanUp(Build.java:192)
+ at hudson.model.Run.execute(Run.java:1546)
+ at hudson.model.FreeStyleBuild.run(FreeStyleBuild.java:46)
+ at hudson.model.ResourceController.execute(ResourceController.java:88)
+ at hudson.model.Executor.run(Executor.java:236)
+Finished: FAILURE
+```
+
+The way of storing the plugin configuration has changed in the recent versions. However, after 
+upgrading both Jenkins and Flowdock plugin, the old configuration data may remain and cause exceptions 
+like this. The quickest way to resolve this is to re-install the Flowdock plugin, which should flush the 
+cached configuration.
+
+
+```
 Flowdock: failed to send notification
 Flowdock: response status: 401 Unauthorized
 ```
