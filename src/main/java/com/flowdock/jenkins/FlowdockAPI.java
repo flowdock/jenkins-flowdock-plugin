@@ -18,7 +18,7 @@ public class FlowdockAPI {
 
     public FlowdockAPI(String apiUrl, String flowToken) {
         this.apiUrl = apiUrl;
-        this.flowToken = flowToken;
+        this.flowToken = parseFlowTokens(flowToken);
     }
 
     public void pushTeamInboxMessage(TeamInboxMessage msg) throws FlowdockException {
@@ -70,7 +70,9 @@ public class FlowdockAPI {
                 } catch(Exception ex) {
                     // nothing we can do about this
                 } finally {
-                    throw new FlowdockException("Flowdock returned an error response with status " + connection.getResponseCode() + " " + connection.getResponseMessage() + ", " + responseContent.toString());
+                    throw new FlowdockException("Flowdock returned an error response with status " +
+                    connection.getResponseCode() + " " + connection.getResponseMessage() + ", " +
+                    responseContent.toString() + "\n\nURL: " + flowdockUrl);
                 }
             }
         } catch(MalformedURLException ex) {
@@ -80,5 +82,21 @@ public class FlowdockAPI {
         } catch(IOException ex) {
             throw new FlowdockException("IOException in connecting to Flowdock: " + ex.getMessage());
         }
+    }
+
+    public static String parseFlowTokens(String flowTokens) {
+        if(flowTokens == null)
+            return "";
+        String[] tokens = flowTokens.split(",");
+        String parsedTokens = "";
+        for(int i = 0; i < tokens.length; i++) {
+            String token = tokens[i].trim();
+            if(token.length() == 0) continue;
+
+            parsedTokens += token;
+            if(i < tokens.length - 1)
+                parsedTokens += ",";
+        }
+        return parsedTokens;
     }
 }
