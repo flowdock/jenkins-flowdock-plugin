@@ -4,7 +4,7 @@
         <td>
     <table width="100%">
 
-      <f:entry title="Flow API token" field="flowToken">
+      <f:entry title="Flow API token(s)" field="flowToken">
         <f:textbox />
       </f:entry>
 
