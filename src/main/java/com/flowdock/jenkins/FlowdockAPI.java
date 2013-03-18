@@ -18,7 +18,7 @@ public class FlowdockAPI {
 
     public FlowdockAPI(String apiUrl, String flowToken) {
         this.apiUrl = apiUrl;
-        this.flowToken = parseFlowTokens(flowToken);
+        this.flowToken = trimFlowTokens(flowToken);
     }
 
     public void pushTeamInboxMessage(TeamInboxMessage msg) throws FlowdockException {
@@ -84,19 +84,7 @@ public class FlowdockAPI {
         }
     }
 
-    public static String parseFlowTokens(String flowTokens) {
-        if(flowTokens == null)
-            return "";
-        String[] tokens = flowTokens.split(",");
-        String parsedTokens = "";
-        for(int i = 0; i < tokens.length; i++) {
-            String token = tokens[i].trim();
-            if(token.length() == 0) continue;
-
-            parsedTokens += token;
-            if(i < tokens.length - 1)
-                parsedTokens += ",";
-        }
-        return parsedTokens;
+    public static String trimFlowTokens(String flowTokens) {
+        return flowTokens.replaceAll("\\s", "");
     }
 }
