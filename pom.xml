@@ -1,16 +1,16 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0                       http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.jenkins-ci.plugins</groupId>
     <artifactId>plugin</artifactId>
-    <version>1.478</version><!-- which version of Jenkins is this plugin built against? -->
+    <version>1.506</version><!-- which version of Jenkins is this plugin built against? -->
   </parent>
 
   <groupId>com.flowdock.jenkins</groupId>
   <name>Flowdock plugin</name>
   <description>Posts build notifications to your flow</description>
   <artifactId>jenkins-flowdock-plugin</artifactId>
-  <version>1.0.8-SNAPSHOT</version>
+  <version>1.1.0</version>
   <packaging>hpi</packaging>
   <url>https://github.com/flowdock/jenkins-flowdock-plugin</url>
 
@@ -39,6 +39,11 @@
       <id>repo.jenkins-ci.org</id>
       <url>http://repo.jenkins-ci.org/public/</url>
     </repository>
+    <repository>
+              <id>java.net-m2-repository</id>
+              <url>http://maven.jenkins-ci.org:8081/content/repositories/releases/
+              </url>
+            </repository>
   </repositories>
 
   <pluginRepositories>
@@ -46,5 +51,12 @@
       <id>repo.jenkins-ci.org</id>
       <url>http://repo.jenkins-ci.org/public/</url>
     </pluginRepository>
+    <pluginRepository>
+              <id>jenkins-m2-repository</id>
+              <name>Jenkins Plugin Repository</name>
+              <url>http://maven.jenkins-
+    ci.org:8081/content/repositories/releases/</url>
+              <layout>default</layout>
+            </pluginRepository>
   </pluginRepositories>
 </project>
