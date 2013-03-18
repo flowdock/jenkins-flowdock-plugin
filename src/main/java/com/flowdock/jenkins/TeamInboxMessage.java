@@ -91,12 +91,21 @@ public class TeamInboxMessage extends FlowdockMessage {
 
         List<Entry> commits = parseCommits(build);
         if(commits != null) {
-            content.append("<h3>Changes</h3>");
+            content.append("<h3>Changes</h3><div class=\"commits\"><ul class=\"commit-list clean\">");
             for(Entry commit : commits) {
-                content.append("<strong>").append(commit.getAuthor()).append("</strong>:");
-                content.append(" <small><code>").append(commit.getCommitId()).append("</code></small> ").append(commit.getMsg()).append("");
-                content.append("<br />");
+                content.append("<li class=\"commit\"><span class=\"commit-details\">");
+                content.append("<span class=\"author-info\">").
+                    append("<span class=\"commit-author-name\">").
+                        append(commit.getAuthor()).
+                    append("</span>").
+                append("</span> &nbsp;");
+                content.append("<span title=\"" + commit.getCommitId() + "\" class=\"commit-sha\">").
+                    append(commit.getCommitId().substring(0, 6)).
+                append("</span> &nbsp;");
+                content.append("<span class=\"commit-message\">").append(commit.getMsg()).append("</span>");
+                content.append("</span></li>");
             }
+            content.append("</ul></div>");
         }
 
         msg.setContent(content.toString());
