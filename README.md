@@ -20,6 +20,8 @@ to go. See [Tokens](https://www.flowdock.com/account/tokens) page for list of yo
 
 ### From source
 
+To compile this plugin from source, you need to have at Maven 3.0.4 or newer installed.
+
  * Clone the Github repo
  * Run `mvn install` to build a .hpi-plugin package
  * Install it by uploading the package in admin: `Manage Jenkins/Hudson -> Manage Plugins -> Advanced -> Upload Plugin`
