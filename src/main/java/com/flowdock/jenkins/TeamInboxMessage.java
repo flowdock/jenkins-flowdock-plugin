@@ -93,14 +93,12 @@ public class TeamInboxMessage extends FlowdockMessage {
         if(commits != null) {
             content.append("<h3>Changes</h3><div class=\"commits\"><ul class=\"commit-list clean\">");
             for(Entry commit : commits) {
-                String commitId = commit.getCommitId();
-                commitId = commitId == null ? "unknown" : commitId;
                 content.append("<li class=\"commit\"><span class=\"commit-details\">");
                 content.append("<span class=\"author-info\">").
                     append("<span>").append(commit.getAuthor()).append("</span>").
                 append("</span> &nbsp;");
-                content.append("<span title=\"" + commitId + "\" class=\"commit-sha\">").
-                    append(commitId.substring(0, 7)).
+                content.append("<span title=\"" + commitId(commit) + "\" class=\"commit-sha\">").
+                    append(commitId(commit, 7)).
                 append("</span> &nbsp;");
                 content.append("<span class=\"commit-message\">").append(commit.getMsg()).append("</span>");
                 content.append("</span></li>");
@@ -124,5 +122,19 @@ public class TeamInboxMessage extends FlowdockMessage {
             commits.add(0, entry);
         }
         return commits;
+    }
+
+    private static String commitId(Entry commit) {
+      String id = commit.getCommitId();
+      if (id == null) {
+        return "unknown";
+      } else {
+        return id;
+      }
+    }
+
+    private static String commitId(Entry commit, int length) {
+      String id = commitId(commit);
+      return id.substring(0, Math.max(length, id.length()));
     }
 }
