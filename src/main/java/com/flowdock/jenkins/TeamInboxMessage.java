@@ -135,6 +135,6 @@ public class TeamInboxMessage extends FlowdockMessage {
 
     private static String commitId(Entry commit, int length) {
       String id = commitId(commit);
-      return id.substring(0, Math.max(length, id.length()));
+      return id.substring(0, Math.min(length, id.length()));
     }
 }
