@@ -26,6 +26,16 @@ public class ChatMessage extends FlowdockMessage {
     public static ChatMessage fromBuild(AbstractBuild build, BuildResult buildResult) {
         ChatMessage msg = new ChatMessage();
         StringBuffer content = new StringBuffer();
+        switch(buildResult){
+            case SUCCESS:
+            case FIXED:
+                content.append(":+1:\n"); 
+                break;
+            default: 
+                content.append(":bomb: :boom:\n");
+                break;          
+        }
+
         String buildNo = build.getDisplayName().replaceAll("#", "");
         content.append(build.getProject().getName()).append(" build ").append(buildNo);
         content.append(" ").append(buildResult.getHumanResult());
