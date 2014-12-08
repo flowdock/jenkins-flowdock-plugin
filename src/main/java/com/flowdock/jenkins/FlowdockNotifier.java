@@ -1,22 +1,24 @@
 package com.flowdock.jenkins;
 
 import com.flowdock.jenkins.exception.FlowdockException;
+import hudson.EnvVars;
 import hudson.Extension;
 import hudson.Launcher;
-import hudson.util.FormValidation;
 import hudson.model.AbstractBuild;
-import hudson.model.BuildListener;
 import hudson.model.AbstractProject;
+import hudson.model.BuildListener;
 import hudson.model.Result;
-import hudson.tasks.Notifier;
-import hudson.tasks.Publisher;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.BuildStepMonitor;
+import hudson.tasks.Notifier;
+import hudson.tasks.Publisher;
+import hudson.util.FormValidation;
 import net.sf.json.JSONObject;
 import org.kohsuke.stapler.DataBoundConstructor;
-import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.QueryParameter;
+import org.kohsuke.stapler.StaplerRequest;
 
+import java.io.IOException;
 import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Map;
@@ -122,20 +124,35 @@ public class FlowdockNotifier extends Notifier {
         try {
             FlowdockAPI api = new FlowdockAPI(getDescriptor().apiUrl(), flowToken);
             TeamInboxMessage msg = TeamInboxMessage.fromBuild(build, buildResult);
-            msg.setTags(notificationTags);
+            EnvVars vars = build.getEnvironment(listener);
+            msg.setTags(vars.expand(notificationTags));
             api.pushTeamInboxMessage(msg);
             listener.getLogger().println("Flowdock: Team Inbox notification sent successfully");
 
             if(build.getResult() != Result.SUCCESS && chatNotification) {
                 ChatMessage chatMsg = ChatMessage.fromBuild(build, buildResult);
-                chatMsg.setTags(notificationTags);
+                chatMsg.setTags(vars.expand(notificationTags));
                 api.pushChatMessage(chatMsg);
                 logger.println("Flowdock: Chat notification sent successfully");
             }
-        } catch(FlowdockException ex) {
+        }
+
+        catch(IOException ex) {
+            logger.println("Flowdock: failed to get variables from build");
+            logger.println("Flowdock: " + ex.getMessage());
+        }
+
+        catch(InterruptedException ex) {
+            logger.println("Flowdock: failed to get variables from build");
+            logger.println("Flowdock: " + ex.getMessage());
+        }
+
+        catch(FlowdockException ex) {
             logger.println("Flowdock: failed to send notification");
             logger.println("Flowdock: " + ex.getMessage());
         }
+
+
     }
 
     @Override
